@@ -2,12 +2,16 @@ package main
 
 import (
 	"fmt"
-
+	"time"
 	"os"
 	"os/exec"
-
 	"strings"
 )
+
+func executeKillUSD() bool {
+	exec.Command("TASKKILL", "/F", "/IM", "UnifiedServiceDesk.exe").Output()
+	return true
+}
 
 func executeClearIECache() bool {
 	/*
@@ -30,8 +34,10 @@ func executeClearIECache() bool {
 
 		out, err := exec.Command("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess", "255").Output()
 	*/
+	executeKillUSD()
+
 	//clearing temp Files
-	out, err := exec.Command("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess", "8").Output()
+	_, err := exec.Command("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess", "8").Output()
 	//clearing Cookies
 	exec.Command("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess", "2").Output()
 	//clearing History
@@ -57,7 +63,7 @@ func executeClearIECache() bool {
 		if strings.Contains(path, "javapath") {
 			//we found out that the current machine has javapath intalled
 			//we can clear the java cache
-
+			fmt.Println("Detected java installed.. clearing its cache..")
 			exec.Command("javaws", "-uninstall", "1").Output()
 			break //exit the loop
 		}
@@ -67,10 +73,18 @@ func executeClearIECache() bool {
 		fmt.Println("ERROR: ", err)
 		return false
 	}
-	fmt.Printf("Command output : %s", out)
+	//fmt.Printf("Command output : %s", out)
 	return true
 }
 
 func main() {
+	fmt.Println("Welcome to AD Cache Clearing Tool, Made in GOLANG!")
+	executeKillUSD()
 	executeClearIECache()
+
+	fmt.Println("[!] Successfully Finished Execution, you are all set...")
+
+	duration := time.Duration(5) * time.Second // Pause for 10 seconds
+	time.Sleep(duration)
+
 }
