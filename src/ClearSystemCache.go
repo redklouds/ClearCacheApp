@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
+	"time"
 )
 
 func executeKillUSD() bool {
@@ -13,6 +14,31 @@ func executeKillUSD() bool {
 	return true
 }
 
+func executeClearUSDCache() bool {
+	//clear the USD configuration
+
+	_appdataDir := os.Getenv("appdata")
+	_usdCacheDir := filepath.Join(_appdataDir, "Microsoft", "USD")
+	dir, err := os.Open(_usdCacheDir)
+	defer dir.Close()
+	if err != nil {
+		fmt.Println("ERROR OCCURED Opening USD Cache folder: ", err)
+		return false
+	}
+	fileList, _ := dir.Readdirnames(-1)
+
+	for _, file := range fileList {
+		fmt.Println("Removing: ", file)
+		_rmErr := os.Remove(filepath.Join(_usdCacheDir, file))
+
+		if _rmErr != nil {
+			fmt.Println("ERROR OCCURED DELETING: ", _rmErr)
+			return false
+		}
+	}
+	return true
+
+}
 func executeClearIECache() bool {
 	/*
 		_command := exec.Command("Cmd", "Rundll32.exe", "inetCpl.cpl,ClearMyTracksByProcess 8")
@@ -80,6 +106,7 @@ func executeClearIECache() bool {
 func main() {
 	fmt.Println("Welcome to AD Cache Clearing Tool, Made in GOLANG!")
 	executeKillUSD()
+	executeClearUSDCache()
 	executeClearIECache()
 
 	fmt.Println("[!] Successfully Finished Execution, you are all set...")
