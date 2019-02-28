@@ -1,2 +1,3 @@
 # ClearCacheApp
-Application Built in go to clear your IE cache, just for fun
+
+Application to clear your IE cache as well as USD Cache

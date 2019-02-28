@@ -1,5 +1,9 @@
 package main
+/*
+This is a program that clears your IE cache as well as clears your USD(unified Service Desk ) Cache
 
+*/
+//https://sausheong.github.io/posts/how-to-build-a-simple-artificial-neural-network-with-go/
 import (
 	"fmt"
 	"os"
@@ -25,17 +29,28 @@ func executeClearUSDCache() bool {
 		fmt.Println("ERROR OCCURED Opening USD Cache folder: ", err)
 		return false
 	}
-	fileList, _ := dir.Readdirnames(-1)
 
-	for _, file := range fileList {
-		fmt.Println("Removing: ", file)
-		_rmErr := os.Remove(filepath.Join(_usdCacheDir, file))
+	_fileToDel := "Default_USD.tokens.dat"
+	delErr := os.Remove(filepath.Join(_usdCacheDir, _fileToDel))
 
-		if _rmErr != nil {
-			fmt.Println("ERROR OCCURED DELETING: ", _rmErr)
-			return false
-		}
+	if delErr != nil {
+		fmt.Println("USD cache already Cleared ")
+		return false
 	}
+	//fileList, _ := dir.Readdirnames(-1)
+
+	/*
+		for _, file := range fileList {
+			fmt.Println("Removing: ", file)
+			_rmErr := os.Remove(filepath.Join(_usdCacheDir, file))
+
+			if _rmErr != nil {
+				fmt.Println("ERROR OCCURED DELETING: ", _rmErr)
+				return false
+			}
+		}
+	*/
+
 	return true
 
 }
@@ -64,6 +79,7 @@ func executeClearIECache() bool {
 
 	//clearing temp Files
 	_, err := exec.Command("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess", "8").Output()
+	//exec.Command("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess", "8").Output()
 	//clearing Cookies
 	exec.Command("rundll32.exe", "InetCpl.cpl,ClearMyTracksByProcess", "2").Output()
 	//clearing History
@@ -89,14 +105,14 @@ func executeClearIECache() bool {
 		if strings.Contains(path, "javapath") {
 			//we found out that the current machine has javapath intalled
 			//we can clear the java cache
-			fmt.Println("Detected java installed.. clearing its cache..")
-			exec.Command("javaws", "-uninstall", "1").Output()
+			//fmt.Println("Detected java installed.. clearing its cache..")
+			//exec.Command("javaws", "-uninstall", "1").Output()
 			break //exit the loop
 		}
 	}
 
 	if err != nil {
-		fmt.Println("ERROR: ", err)
+		//fmt.Println("ERROR: ", err)
 		return false
 	}
 	//fmt.Printf("Command output : %s", out)
@@ -109,7 +125,7 @@ func main() {
 	executeClearUSDCache()
 	executeClearIECache()
 
-	fmt.Println("[!] Successfully Finished Execution, you are all set...")
+	fmt.Println("[!] Successfully Finished Execution, you are all set...\nProgram will close in 5 seconds! whoohoo")
 
 	duration := time.Duration(5) * time.Second // Pause for 10 seconds
 	time.Sleep(duration)
